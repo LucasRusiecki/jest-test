@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -38,7 +35,7 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder, String basePath) {
+    public ResponseEntity create(@ModelAttribute T input, UriComponentsBuilder ucBuilder, String basePath) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path(basePath + "{id}").buildAndExpand(input.getId()).toUri());
         service.save(input);
@@ -46,7 +43,7 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity update(@PathVariable("id") long id, @RequestBody T input) {
+    public ResponseEntity update(@PathVariable("id") long id, @ModelAttribute T input) {
         T updatedObject = service.findById(id);
         if (updatedObject == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
