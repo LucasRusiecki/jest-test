@@ -7,12 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ArticleService {
+public class ArticleService implements SimpleCrudService<Article> {
+    @Override
     public List<Article> findAll() {
         return new ArrayList<>();
     }
 
+    @Override
     public Article findById(long id) {
         return null;
+    }
+
+    @Override
+    public void save(Object object) {
+
     }
 }
