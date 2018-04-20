@@ -26,7 +26,8 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
-	compile('io.searchbox:jest:5.5.3')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('io.searchbox:jest')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
