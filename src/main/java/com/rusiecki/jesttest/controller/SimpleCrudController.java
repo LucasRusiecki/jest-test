@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudService<T>> {
+public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCrudService<T>> {
 
     @Autowired
     private U service;
@@ -42,13 +42,22 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.PUT)
     public ResponseEntity update(@PathVariable("id") String id, @RequestBody T input) {
-        T updatedObject = service.findById(id);
-        if (updatedObject == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        input.setId(id);
         service.save(input);
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable("id") String id) {
+        service.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteAll() {
+        service.deleteAll();
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

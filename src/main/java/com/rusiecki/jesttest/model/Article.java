@@ -11,6 +11,6 @@ public class Article implements BaseDto {
     private String id;
     private String title;
     private String body;
-    //    private List<Link> links;
+    private List<Link> links;
     private List<String> tags;
 }

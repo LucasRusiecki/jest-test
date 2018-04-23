@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/articles/")
-public class ArticleController extends SimpleController<Article, ArticleService> {
+public class ArticleCrudController extends SimpleCrudController<Article, ArticleService> {
 
     public static final String BASE_PATH = "/articles/";
 }

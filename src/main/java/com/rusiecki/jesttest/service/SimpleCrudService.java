@@ -8,4 +8,8 @@ public interface SimpleCrudService<T> {
     T findById(String id);
 
     void save(Object object);
+
+    void delete(String id);
+
+    void deleteAll();
 }
