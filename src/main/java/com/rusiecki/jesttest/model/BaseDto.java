@@ -1,6 +1,8 @@
 package com.rusiecki.jesttest.model;
 
-public interface BaseDto {
-    Long getId();
+import java.io.Serializable;
+
+public interface BaseDto extends Serializable {
+    String getId();
 
 }

@@ -5,6 +5,8 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +22,11 @@ public class ArticleService implements SimpleCrudService<Article> {
 
     @Override
     public List<Article> findAll() {
-        String query = "{\n" +
-                "    \"query\": {\n" +
-                "        \"match_all\" : {\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
-        Search search = (Search) new Search.Builder(query)
-                // multiple index or types can be added.
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        Search search = new Search.Builder(searchSourceBuilder.toString())
                 .addIndex("articles")
+                .addType("_doc")
                 .build();
         JestResult result = null;
         try {
@@ -41,13 +39,25 @@ public class ArticleService implements SimpleCrudService<Article> {
     }
 
     @Override
-    public Article findById(long id) {
-        return null;
+    public Article findById(String id) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.idsQuery().addIds(id));
+        Search search = new Search.Builder(searchSourceBuilder.toString())
+                .addIndex("articles")
+                .addType("_doc")
+                .build();
+        JestResult result = null;
+        try {
+            result = client.execute(search);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result != null ? result.getSourceAsObject(Article.class) : null;
     }
 
     @Override
     public void save(Object object) {
-        Index index = new Index.Builder(object).index("articles").build();
+        Index index = new Index.Builder(object).index("articles").type("_doc").build();
         try {
             client.execute(index);
         } catch (IOException e) {

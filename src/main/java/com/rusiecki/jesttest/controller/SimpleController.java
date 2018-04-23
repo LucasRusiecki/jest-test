@@ -25,8 +25,8 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity get(@PathVariable("id") long id) {
+    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.GET)
+    public ResponseEntity get(@PathVariable("id") String id) {
         T response = service.findById(id);
         if (response == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -35,7 +35,7 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity create(@ModelAttribute T input, UriComponentsBuilder ucBuilder, String basePath) {
+    public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder, String basePath) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path(basePath + "{id}").buildAndExpand(input.getId()).toUri());
         service.save(input);
@@ -43,7 +43,7 @@ public abstract class SimpleController<T extends BaseDto, U extends SimpleCrudSe
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity update(@PathVariable("id") long id, @ModelAttribute T input) {
+    public ResponseEntity update(@PathVariable("id") String id, @RequestBody T input) {
         T updatedObject = service.findById(id);
         if (updatedObject == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

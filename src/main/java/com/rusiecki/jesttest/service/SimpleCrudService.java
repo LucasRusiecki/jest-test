@@ -5,7 +5,7 @@ import java.util.List;
 public interface SimpleCrudService<T> {
     List<T> findAll();
 
-    T findById(long id);
+    T findById(String id);
 
     void save(Object object);
 }
