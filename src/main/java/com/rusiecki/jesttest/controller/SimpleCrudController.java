@@ -25,7 +25,7 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity get(@PathVariable("id") String id) {
         T response = service.findById(id);
         if (response == null) {
@@ -42,14 +42,14 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity update(@PathVariable("id") String id, @RequestBody T input) {
         input.setId(id);
         service.save(input);
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/_doc/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable("id") String id) {
         service.delete(id);
         return new ResponseEntity(HttpStatus.OK);
