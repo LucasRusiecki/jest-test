@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class SimpleCrudService<T extends BaseDto> {
 
-    private static final String TYPE = "_doc";
+    public static final String TYPE = "_doc";
     @Autowired
     private JestClient client;
 

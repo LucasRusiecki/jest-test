@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostService extends SimpleCrudService<Post> {
 
-    private static final String INDEX = "posts";
+    public static final String INDEX = "posts";
 
     public PostService() {
         super(INDEX, Post.class);

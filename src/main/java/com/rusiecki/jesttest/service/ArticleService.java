@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArticleService extends SimpleCrudService<Article> {
 
-    private static final String INDEX = "articles";
+    public static final String INDEX = "articles";
 
     public ArticleService() {
         super(INDEX, Article.class);
