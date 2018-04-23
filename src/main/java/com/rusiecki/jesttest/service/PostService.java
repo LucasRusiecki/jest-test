@@ -8,13 +8,7 @@ public class PostService extends SimpleCrudService<Post> {
 
     private static final String INDEX = "posts";
 
-    @Override
-    String getIndex() {
-        return INDEX;
-    }
-
-    @Override
-    Class<Post> getClazz() {
-        return Post.class;
+    public PostService() {
+        super(INDEX, Post.class);
     }
 }

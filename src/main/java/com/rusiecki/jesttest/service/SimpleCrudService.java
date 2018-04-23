@@ -21,14 +21,19 @@ public abstract class SimpleCrudService<T extends BaseDto> {
     @Autowired
     private JestClient client;
 
-    abstract String getIndex();
-    abstract Class<T> getClazz();
+    private final String index;
+    private final Class<T> clazz;
+
+    public SimpleCrudService(String index, Class<T> clazz) {
+        this.index = index;
+        this.clazz = clazz;
+    }
 
     public List<T> findAll() {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
         Search search = new Search.Builder(searchSourceBuilder.toString())
-                .addIndex(getIndex())
+                .addIndex(this.index)
                 .addType(TYPE)
                 .build();
         JestResult result;
@@ -38,14 +43,14 @@ public abstract class SimpleCrudService<T extends BaseDto> {
             e.printStackTrace();
             return new ArrayList<>();
         }
-        return result.getSourceAsObjectList(getClazz());
+        return result.getSourceAsObjectList(this.clazz);
     }
 
     public T findById(String id) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.idsQuery().addIds(id));
         Search search = new Search.Builder(searchSourceBuilder.toString())
-                .addIndex(getIndex())
+                .addIndex(this.index)
                 .addType(TYPE)
                 .build();
         JestResult result = null;
@@ -54,11 +59,11 @@ public abstract class SimpleCrudService<T extends BaseDto> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result != null ? result.getSourceAsObject(getClazz()) : null;
+        return result != null ? result.getSourceAsObject(this.clazz) : null;
     }
 
     public void save(Object object) {
-        Index index = new Index.Builder(object).index(getIndex()).type(TYPE).build();
+        Index index = new Index.Builder(object).index(this.index).type(TYPE).build();
         try {
             client.execute(index);
         } catch (IOException e) {
@@ -67,7 +72,7 @@ public abstract class SimpleCrudService<T extends BaseDto> {
     }
 
     public void delete(String id) {
-        Delete delete = new Delete.Builder(id).index(getIndex()).type(TYPE).build();
+        Delete delete = new Delete.Builder(id).index(this.index).type(TYPE).build();
         try {
             client.execute(delete);
         } catch (IOException e) {
@@ -76,7 +81,7 @@ public abstract class SimpleCrudService<T extends BaseDto> {
     }
 
     public void deleteAll() {
-        DeleteIndex delete = new DeleteIndex.Builder(getIndex()).build();
+        DeleteIndex delete = new DeleteIndex.Builder(this.index).build();
         try {
             client.execute(delete);
         } catch (IOException e) {

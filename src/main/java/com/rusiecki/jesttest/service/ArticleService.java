@@ -8,13 +8,7 @@ public class ArticleService extends SimpleCrudService<Article> {
 
     private static final String INDEX = "articles";
 
-    @Override
-    String getIndex() {
-        return INDEX;
-    }
-
-    @Override
-    Class<Article> getClazz() {
-        return Article.class;
+    public ArticleService() {
+        super(INDEX, Article.class);
     }
 }
