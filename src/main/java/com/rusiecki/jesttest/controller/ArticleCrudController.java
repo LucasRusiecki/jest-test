@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ArticleCrudController.BASE_PATH)
 public class ArticleCrudController extends SimpleCrudController<Article, ArticleService> {
 
-    public static final String BASE_PATH = "/articles/";
+    public static final String BASE_PATH = "/articles";
 }

@@ -16,7 +16,7 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
     @Autowired
     private U service;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity getAll() {
         List<T> responseList = service.findAll();
         if (responseList.isEmpty()) {
@@ -34,7 +34,7 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder, String basePath) {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path(basePath + "{id}").buildAndExpand(input.getId()).toUri());
@@ -55,7 +55,7 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
     public ResponseEntity deleteAll() {
         service.deleteAll();
         return new ResponseEntity(HttpStatus.OK);

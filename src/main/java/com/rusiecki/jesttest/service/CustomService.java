@@ -16,8 +16,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+/*
+43.3.8 Auto-configured Spring MVC Tests
+rest assured(bealdung) spock spring boot started tests
+restassured -> spring mock mvc
+ */
 @Component
 public class CustomService {
     @Autowired
@@ -38,6 +45,10 @@ public class CustomService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+        return jsonToObject(result);
+    }
+
+    private List<BaseDto> jsonToObject(JestResult result) {
         List<BaseDto> resultList = new ArrayList<>();
         JsonArray jsonArray = result.getJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
         for (JsonElement jsonElement : jsonArray) {
@@ -62,5 +73,22 @@ public class CustomService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List search(String[] indexes, String text) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.queryStringQuery(text));
+        Search search = new Search.Builder(searchSourceBuilder.toString())
+                .addIndices(Arrays.asList(indexes))
+                .addType(SimpleCrudService.TYPE)
+                .build();
+        JestResult result;
+        try {
+            result = client.execute(search);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+        return jsonToObject(result);
     }
 }

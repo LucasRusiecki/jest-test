@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(PostCrudController.BASE_PATH)
 public class PostCrudController extends SimpleCrudController<Post, PostService> {
 
-    public static final String BASE_PATH = "/posts/";
+    public static final String BASE_PATH = "/posts";
 }
