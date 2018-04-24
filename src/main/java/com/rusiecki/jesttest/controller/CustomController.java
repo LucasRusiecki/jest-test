@@ -36,4 +36,14 @@ public class CustomController {
         return new ResponseEntity<>(responseList, HttpStatus.OK);
 
     }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity search(@RequestParam(value = "index") String[] index, @RequestParam(value = "text") String text){
+        List responseList = service.search(index, text);
+        if (responseList.isEmpty()) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+
+    }
 }
