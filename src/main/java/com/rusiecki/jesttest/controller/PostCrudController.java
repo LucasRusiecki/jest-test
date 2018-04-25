@@ -12,4 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostCrudController extends SimpleCrudController<Post, PostService> {
 
     public static final String BASE_PATH = "/posts";
+
+    protected PostCrudController() {
+        super(BASE_PATH);
+    }
 }

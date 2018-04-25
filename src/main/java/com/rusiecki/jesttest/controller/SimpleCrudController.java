@@ -13,8 +13,14 @@ import java.util.List;
 
 public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCrudService<T>> {
 
+    private final String basePath;
+
     @Autowired
     private U service;
+
+    protected SimpleCrudController(String basePath) {
+        this.basePath = basePath;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity getAll() {
@@ -35,10 +41,10 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder, String basePath) {
+    public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path(basePath + "{id}").buildAndExpand(input.getId()).toUri());
         service.save(input);
+        headers.setLocation(ucBuilder.path(basePath + "/{id}").buildAndExpand(input.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 

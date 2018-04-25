@@ -10,4 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticleCrudController extends SimpleCrudController<Article, ArticleService> {
 
     public static final String BASE_PATH = "/articles";
+
+    protected ArticleCrudController() {
+        super(BASE_PATH);
+    }
 }

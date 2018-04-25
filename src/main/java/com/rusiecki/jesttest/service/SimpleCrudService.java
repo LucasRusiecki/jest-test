@@ -4,6 +4,7 @@ import com.rusiecki.jesttest.model.BaseDto;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
+import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.indices.DeleteIndex;
@@ -62,10 +63,11 @@ public abstract class SimpleCrudService<T extends BaseDto> {
         return result != null ? result.getSourceAsObject(this.clazz) : null;
     }
 
-    public void save(Object object) {
+    public void save(T object) {
         Index index = new Index.Builder(object).index(this.index).type(TYPE).build();
         try {
-            client.execute(index);
+            JestResult result = client.execute(index);
+            object.setId(((DocumentResult) result).getId());
         } catch (IOException e) {
             e.printStackTrace();
         }
