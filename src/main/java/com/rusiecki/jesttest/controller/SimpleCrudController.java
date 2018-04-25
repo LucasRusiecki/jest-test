@@ -43,9 +43,11 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity create(@RequestBody T input, UriComponentsBuilder ucBuilder) {
         HttpHeaders headers = new HttpHeaders();
-        service.save(input);
-        headers.setLocation(ucBuilder.path(basePath + "/{id}").buildAndExpand(input.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        if (service.save(input)) {
+            headers.setLocation(ucBuilder.path(basePath + "/{id}").buildAndExpand(input.getId()).toUri());
+            return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        }
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
