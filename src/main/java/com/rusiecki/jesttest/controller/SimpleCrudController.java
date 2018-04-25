@@ -51,19 +51,19 @@ public abstract class SimpleCrudController<T extends BaseDto, U extends SimpleCr
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity update(@PathVariable("id") String id, @RequestBody T input) {
         input.setId(id);
-        service.save(input);
-        return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+        if (service.save(input)) {
+            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable("id") String id) {
-        service.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return service.delete(id) ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
     public ResponseEntity deleteAll() {
-        service.deleteAll();
-        return new ResponseEntity(HttpStatus.OK);
+        return service.deleteAll() ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

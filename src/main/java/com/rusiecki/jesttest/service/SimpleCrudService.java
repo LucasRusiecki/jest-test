@@ -63,31 +63,35 @@ public abstract class SimpleCrudService<T extends BaseDto> {
         return result != null ? result.getSourceAsObject(this.clazz) : null;
     }
 
-    public void save(T object) {
+    public boolean save(T object) {
         Index index = new Index.Builder(object).index(this.index).type(TYPE).build();
         try {
             JestResult result = client.execute(index);
             object.setId(((DocumentResult) result).getId());
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void delete(String id) {
+    public boolean delete(String id) {
         Delete delete = new Delete.Builder(id).index(this.index).type(TYPE).build();
         try {
-            client.execute(delete);
+            return client.execute(delete).isSucceeded();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void deleteAll() {
+    public boolean deleteAll() {
         DeleteIndex delete = new DeleteIndex.Builder(this.index).build();
         try {
-            client.execute(delete);
+            return client.execute(delete).isSucceeded();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
