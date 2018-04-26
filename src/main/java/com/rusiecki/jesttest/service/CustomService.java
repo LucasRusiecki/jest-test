@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/*
-43.3.8 Auto-configured Spring MVC Tests
-rest assured(bealdung) spock spring boot started tests
-restassured -> spring mock mvc
- */
 @Component
 public class CustomService {
     @Autowired
