@@ -3,15 +3,16 @@ package com.rusiecki.jesttest.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.rusiecki.jesttest.controller.SimpleRestPath;
 import com.rusiecki.jesttest.model.Article;
 import com.rusiecki.jesttest.model.BaseDto;
+import com.rusiecki.jesttest.model.DocumentBuilder;
 import com.rusiecki.jesttest.model.Post;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Search;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,8 +22,12 @@ import java.util.List;
 
 @Component
 public class CustomService {
-    @Autowired
-    private JestClient client;
+
+    private final JestClient client;
+
+    public CustomService(JestClient client) {
+        this.client = client;
+    }
 
     public List findAll() {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -42,7 +47,7 @@ public class CustomService {
         return jsonToObject(result);
     }
 
-    private List<BaseDto> jsonToObject(JestResult result) {
+    private List<BaseDto> jsonToObject(final JestResult result) {
         List<BaseDto> resultList = new ArrayList<>();
         JsonArray jsonArray = result.getJsonObject().get("hits").getAsJsonObject().get("hits").getAsJsonArray();
         for (JsonElement jsonElement : jsonArray) {
@@ -56,20 +61,21 @@ public class CustomService {
         return resultList;
     }
 
-    private <T extends BaseDto> T createObject(JsonElement jsonElement, Class<T> clazz) {
+    private <T extends BaseDto> T createObject(final JsonElement jsonElement, final Class<T> clazz) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String source = jsonElement.getAsJsonObject().get("_source").toString();
             T object = mapper.readValue(source, clazz);
-            object.setId(jsonElement.getAsJsonObject().get("_id").getAsString());
-            return object;
+            String id = jsonElement.getAsJsonObject().get("_id").getAsString();
+            DocumentBuilder documentBuilder = SimpleRestPath.getByClass(clazz).getBuilder().get();
+            return (T) documentBuilder.id(id).copy(object).build();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public List search(String[] indexes, String text) {
+    public List search(final String[] indexes, final String text) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.queryStringQuery(text));
         Search search = new Search.Builder(searchSourceBuilder.toString())

@@ -10,15 +10,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JestConfig {
 
-    @Value("${elasticsearch.url}")
-    private String elasticSearchUrl;
+    private final String elasticSearchUrl;
+
+    public JestConfig(@Value("${elasticsearch.url}") final String elasticSearchUrl) {
+        this.elasticSearchUrl = elasticSearchUrl;
+    }
 
     @Bean
     public JestClient jestClient() {
-        String connectionUrl = elasticSearchUrl;
         JestClientFactory factory = new JestClientFactory();
         factory.setHttpClientConfig(new HttpClientConfig
-                .Builder(connectionUrl)
+                .Builder(elasticSearchUrl)
                 .multiThreaded(true)
                 .build());
         return factory.getObject();

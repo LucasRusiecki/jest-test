@@ -10,7 +10,6 @@ import io.searchbox.core.Search;
 import io.searchbox.indices.DeleteIndex;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,14 +17,14 @@ import java.util.List;
 
 public abstract class SimpleCrudService<T extends BaseDto> {
 
-    public static final String TYPE = "_doc";
-    @Autowired
-    private JestClient client;
+    static final String TYPE = "_doc";
+    private final JestClient client;
 
     private final String index;
     private final Class<T> clazz;
 
-    public SimpleCrudService(String index, Class<T> clazz) {
+    SimpleCrudService(JestClient client, final String index, final Class<T> clazz) {
+        this.client = client;
         this.index = index;
         this.clazz = clazz;
     }
@@ -47,7 +46,7 @@ public abstract class SimpleCrudService<T extends BaseDto> {
         return result.getSourceAsObjectList(this.clazz);
     }
 
-    public T findById(String id) {
+    public T findById(final String id) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.idsQuery().addIds(id));
         Search search = new Search.Builder(searchSourceBuilder.toString())
@@ -63,19 +62,28 @@ public abstract class SimpleCrudService<T extends BaseDto> {
         return result != null ? result.getSourceAsObject(this.clazz) : null;
     }
 
-    public boolean save(T object) {
+    public boolean saveGet(final T object) {
         Index index = new Index.Builder(object).index(this.index).type(TYPE).build();
         try {
-            JestResult result = client.execute(index);
-            object.setId(((DocumentResult) result).getId());
-            return true;
+            return  client.execute(index).isSucceeded();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean delete(String id) {
+    public String savePost(final T object) {
+        Index index = new Index.Builder(object).index(this.index).type(TYPE).build();
+        try {
+            JestResult result = client.execute(index);
+            return ((DocumentResult) result).getId();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean delete(final String id) {
         Delete delete = new Delete.Builder(id).index(this.index).type(TYPE).build();
         try {
             return client.execute(delete).isSucceeded();

@@ -1,14 +1,15 @@
 package com.rusiecki.jesttest.service;
 
 import com.rusiecki.jesttest.model.Article;
+import io.searchbox.client.JestClient;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ArticleService extends SimpleCrudService<Article> {
 
-    public static final String INDEX = "articles";
+    static final String INDEX = "articles";
 
-    public ArticleService() {
-        super(INDEX, Article.class);
+    public ArticleService(final JestClient client) {
+        super(client, INDEX, Article.class);
     }
 }

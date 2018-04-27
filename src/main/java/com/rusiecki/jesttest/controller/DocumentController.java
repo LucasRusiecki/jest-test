@@ -1,7 +1,6 @@
 package com.rusiecki.jesttest.controller;
 
 import com.rusiecki.jesttest.service.CustomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,16 +8,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(CustomController.BASE_PATH)
-public class CustomController {
+@RequestMapping(DocumentController.BASE_PATH)
+public class DocumentController {
 
-    public static final String BASE_PATH = "/custom";
+    static final String BASE_PATH = "/documents";
 
-    @Autowired
-    private CustomService service;
+    private final CustomService service;
+
+    public DocumentController(final CustomService service) {
+        this.service = service;
+    }
 
     @RequestMapping(value = "/")
-    public ResponseEntity findAll(){
+    public ResponseEntity findAll() {
         List responseList = service.findAll();
         if (responseList.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -28,7 +30,8 @@ public class CustomController {
     }
 
     @RequestMapping(value = "/{indexes}/{text}", method = RequestMethod.GET)
-    public ResponseEntity search(@PathVariable String indexes, @PathVariable String text){
+    public ResponseEntity search(@PathVariable final String indexes, @PathVariable final String text) {
+        // guava preconditions
         List responseList = service.search(indexes.split(","), text);
         if (responseList.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -38,7 +41,7 @@ public class CustomController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity search(@RequestParam(value = "index") String[] index, @RequestParam(value = "text") String text){
+    public ResponseEntity search(@RequestParam(value = "index") final String[] index, @RequestParam(value = "text") final String text) {
         List responseList = service.search(index, text);
         if (responseList.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
