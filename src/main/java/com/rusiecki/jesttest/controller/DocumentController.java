@@ -1,6 +1,6 @@
 package com.rusiecki.jesttest.controller;
 
-import com.rusiecki.jesttest.service.CustomService;
+import com.rusiecki.jesttest.service.DocumentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ public class DocumentController {
 
     static final String BASE_PATH = "/documents";
 
-    private final CustomService service;
+    private final DocumentService service;
 
-    public DocumentController(final CustomService service) {
+    public DocumentController(final DocumentService service) {
         this.service = service;
     }
 
@@ -41,7 +41,8 @@ public class DocumentController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity search(@RequestParam(value = "index") final String[] index, @RequestParam(value = "text") final String text) {
+    public ResponseEntity search(@RequestParam(value = "index", required = false, defaultValue = "") final String[] index,
+                                 @RequestParam(value = "text") final String text) {
         List responseList = service.search(index, text);
         if (responseList.isEmpty()) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);

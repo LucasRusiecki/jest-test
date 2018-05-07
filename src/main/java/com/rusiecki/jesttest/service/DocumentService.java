@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class CustomService {
+public class DocumentService {
 
     private final JestClient client;
 
-    public CustomService(JestClient client) {
+    public DocumentService(JestClient client) {
         this.client = client;
     }
 
@@ -44,7 +44,7 @@ public class CustomService {
             e.printStackTrace();
             return new ArrayList<>();
         }
-        return jsonToObject(result);
+        return result.isSucceeded() ? jsonToObject(result) : new ArrayList();
     }
 
     private List<BaseDto> jsonToObject(final JestResult result) {
@@ -89,6 +89,6 @@ public class CustomService {
             e.printStackTrace();
             return new ArrayList<>();
         }
-        return jsonToObject(result);
+        return result.isSucceeded() ? jsonToObject(result) : new ArrayList();
     }
 }
