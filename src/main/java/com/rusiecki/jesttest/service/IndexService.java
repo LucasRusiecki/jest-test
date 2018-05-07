@@ -27,4 +27,6 @@ public class IndexService {
         }
         return result.getJsonString();
     }
+
+    // getting index details, dropping and creating an index
 }
