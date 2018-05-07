@@ -12,7 +12,7 @@ public class IndexService {
 
     private final JestClient client;
 
-    public IndexService(JestClient client) {
+    public IndexService(final JestClient client) {
         this.client = client;
     }
 
