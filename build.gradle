@@ -26,7 +26,11 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
-	compile('io.searchbox:jest:5.5.3')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('io.searchbox:jest')
+	compile('org.elasticsearch:elasticsearch')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.spockframework:spock-core:1.1-groovy-2.4-rc-2')
+	testCompile('io.rest-assured:rest-assured:3.1.0')
 }
